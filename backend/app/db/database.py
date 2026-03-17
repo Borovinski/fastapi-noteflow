@@ -5,7 +5,7 @@ from app.config import settings
 
 # Асинхронный движок
 engine = create_async_engine(
-    settings.database_url,
+    settings.database_url_async,
     echo=True,
 )
 
