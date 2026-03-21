@@ -1,19 +1,21 @@
 # app/migrations/env.py
 import sys
 import os
-
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-if BASE_DIR not in sys.path:
-    sys.path.insert(0, BASE_DIR)
-
-# Импорты проекта
-from app.config import settings
-from app.models import log, note_tag, note, tag, user  # session убрал, он не модель
-from app.db.base import Base
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 from alembic import context
+
+from app.models import note_tag
+
+# Настройка пути к проекту
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+# Импорты конфигурации и Base
+from app.config import settings
+from app.db.base import Base
 
 # Alembic Config object
 config = context.config
@@ -22,7 +24,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Используем **синхронный URL** для Alembic
+# Используем синхронный URL для Alembic
 config.set_main_option("sqlalchemy.url", settings.database_url_sync)
 
 # MetaData для autogenerate
@@ -39,12 +41,26 @@ def run_migrations_offline() -> None:
         dialect_opts={"paramstyle": "named"},
     )
 
+    # Локальный импорт моделей (на всякий случай)
+    from app.models.user import User
+    from app.models.note import Note
+    from app.models.tag import Tag
+    from app.models.note_tag import note_tags
+    from app.models.log import Log
+
     with context.begin_transaction():
         context.run_migrations()
 
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
+    # Локальный импорт моделей, чтобы избежать двойной регистрации
+    from app.models.user import User
+    from app.models.note import Note
+    from app.models.tag import Tag
+    from app.models.note_tag import note_tags
+    from app.models.log import Log
+
     # Создаём движок из конфига Alembic
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
@@ -58,6 +74,7 @@ def run_migrations_online() -> None:
             context.run_migrations()
 
 
+# Запуск миграций
 if context.is_offline_mode():
     run_migrations_offline()
 else:

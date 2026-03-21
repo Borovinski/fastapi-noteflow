@@ -1,9 +1,9 @@
 import hashlib
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.app.models.user import User
-from repositories.user_repository import UserRepository
-from schemas.user import UserRead, UserCreate, UserUpdate
+from app.models.user import User
+from app.repositories.user_repository import UserRepository
+from app.schemas.user import UserRead, UserCreate, UserUpdate
 
 
 class UserService:

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from models.user import User
-from schemas.user import UserBase, UserCreate, UserRead, UserUpdate
+from app.models.user import User
+from app.schemas.user import UserBase, UserCreate, UserRead, UserUpdate
 
 
 class UserRepository:
@@ -27,7 +27,7 @@ class UserRepository:
         self.db.commit()
         self.db.refresh(user)
         return user
-    
+
     def update(self, user: User, user_data: UserUpdate) -> User:
         update_data = user_data.model_dump(exclude_unset=True)
 
