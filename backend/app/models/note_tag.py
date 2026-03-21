@@ -1,20 +1,22 @@
-import uuid
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+# app/models/note_tag.py
+from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import String
-from .note import Note
 from app.db.base import Base
 
-
-class Tag(Base):
-    __tablename__ = "tags"
-
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
-    name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-
-    # связь с заметками через association table
-    notes: Mapped[list["Note"]] = relationship(
-        secondary="note_tags", back_populates="tags"
-    )
+# Таблица-связка для many-to-many Note ↔ Tag
+note_tags = Table(
+    "note_tags",
+    Base.metadata,
+    Column(
+        "note_id",
+        UUID(as_uuid=True),
+        ForeignKey("notes.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    Column(
+        "tag_id",
+        UUID(as_uuid=True),
+        ForeignKey("tags.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+)

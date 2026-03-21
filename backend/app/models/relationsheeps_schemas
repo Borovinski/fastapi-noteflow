@@ -1,0 +1,8 @@
+User
+ ├─< Note
+ │    └─< Log
+ │
+ ├─< Session
+ └─< Log
+
+Note ──<note_tags>── Tag

@@ -3,9 +3,12 @@ from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import String, DateTime, ForeignKey
-from .user import User
-from .note import Note
+from typing import TYPE_CHECKING
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from .user import User
+    from .note import Note
 
 
 class Log(Base):

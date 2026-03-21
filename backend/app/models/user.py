@@ -3,11 +3,14 @@ from sqlalchemy import String, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from datetime import datetime
-from .note import Note
-from .session import Session
-from .log import Log
+from typing import TYPE_CHECKING
 
-from backend.app.db.base import Base
+from app.db.base import Base
+
+if TYPE_CHECKING:
+    from .note import Note
+    from .session import Session
+    from .log import Log
 
 
 class User(Base):
@@ -20,6 +23,12 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     # соединения
-    notes: Mapped[list["Note"]] = relationship(back_populates="user")
-    sessions: Mapped[list["Session"]] = relationship(back_populates="user")
-    logs: Mapped[list["Log"]] = relationship(back_populates="user")
+    notes: Mapped[list["Note"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+    sessions: Mapped[list["Session"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+    logs: Mapped[list["Log"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )

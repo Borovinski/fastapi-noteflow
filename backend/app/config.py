@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     # cors-пути для доступа
     CORS_ORIGINS: List[str] = []
     # пути для сторонних директорий
-    static_dir: str = "static"
-    images_dir: str = "static_images"
+    static_dir: str = "backend/static"
+    images_dir: str = "backend/static/static_images"
 
     # Генерации URL
     # async

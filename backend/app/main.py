@@ -1,0 +1,35 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
+from backend.app.config import settings
+from backend.app.routes import user
+
+
+app = FastAPI(
+    title=settings.app_name,
+    debug=settings.debug,
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
+
+app.include_router(user.router)
+
+
+@app.get("/")
+def root():
+    return {
+        "message": "API is working",
+        "app_name": settings.app_name,
+        "debug": settings.debug,
+    }

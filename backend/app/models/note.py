@@ -1,12 +1,20 @@
+# app/models/note.py
 import uuid
 from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import String, DateTime, ForeignKey
-from .user import User
-from .tag import Tag
-
+from sqlalchemy import DateTime, String, ForeignKey
 from app.db.base import Base
+
+from typing import TYPE_CHECKING
+
+# Импорт таблицы-связки для runtime!
+from app.models.note_tag import note_tags
+
+if TYPE_CHECKING:
+    from .user import User
+    from .tag import Tag
+    from .log import Log
 
 
 class Note(Base):
@@ -27,8 +35,10 @@ class Note(Base):
 
     # связь с тегами через association table
     tags: Mapped[list["Tag"]] = relationship(
-        secondary="note_tags", back_populates="notes"
+        "Tag", secondary=note_tags, back_populates="notes"
     )
 
     # связь с логами
-    logs: Mapped[list["Tag"]] = relationship(back_populates="note")
+    logs: Mapped[list["Log"]] = relationship(
+        "Log", back_populates="note", cascade="all, delete-orphan"
+    )
